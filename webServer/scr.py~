@@ -1,6 +1,0 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from reg import user_zhuce
-
-user_zhuce('1615123150','123456',u'李刚',0,1,u'学生')
