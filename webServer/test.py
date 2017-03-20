@@ -3,6 +3,8 @@
 
 from server import user_log
 from server import file_read
+from server import file_write
+from server import file_del
 
 print '--------------------------------------------------'
 usr = raw_input('用户名：')
@@ -46,5 +48,15 @@ if try1 != -1 and try1 != -2:
     elif try2[1] == 1:
         print try2[0],
         print '--------------------------------------------------'
-        print '您可以修改该文件！'   
+        print '您可以修改该文件！'
+        flag = raw_input('是否修改该文件？ [y/N] ')
+        if flag == 'y':
+            print '--------------------------------------------------'
+            print '请输入修改后的内容：'
+            txt = raw_input()
+            file_write(usr, file_name, txt)
+            print '--------------------------------------------------'
+            print '修改成功'
+        else:
+            pass
     print '--------------------------------------------------' 

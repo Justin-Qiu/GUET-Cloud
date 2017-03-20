@@ -198,17 +198,72 @@ def file_read(usr, file_name):
                 return -2    
 
     # 关闭数据库连接
-    conn.close()    
+    conn.close()
 
 
 '''
 用户写文件函数：
 输入参数
-    用户名，文件名
+    用户名，文件名，文件内容
 返回值
     有写权限且写入成功：1
-    有写权限但写入失败：-1
-    无写权限：-2
+    无写权限：-1
 ''' 
-def file_write(usr, file_name):
+def file_write(usr, file_name, txt):
+
+    #连接MySQL数据库
+    conn = MySQLdb.connect(
+            host='localhost', 
+            user='admin', 
+            passwd='123456', 
+            db='project',
+            charset='utf8'
+            )
+            
+    # 创建游标
+    cur = conn.cursor()
+    
+    # SQL查询语句
+    sql = "SELECT * FROM users WHERE loginid = '%s'" % usr
+    
+    # 执行SQL语句
+    cur.execute(sql)
+    
+    # 获取用户信息
+    results = cur.fetchall()
+    for row in results:
+        title = row[6]
+        cur.execute("SELECT * FROM files WHERE fname = '%s'" % file_name)
+        result_file = cur.fetchall()
+        if title == u'校长':
+            colume = 2
+        elif title == u'院长':
+            colume = 3
+        elif title == u'老师':
+            colume = 4
+        elif title == u'学生':
+            colume = 5
+        
+        # 根据用户权限修改文件
+        for fil in result_file:
+            if 'W' in fil[colume]:
+                with open('files/%s' % file_name, 'w') as f:
+                    f.write('%s' % txt + '\n')
+                return 1
+            else:
+                return -1    
+
+    # 关闭数据库连接
+    conn.close()
+
+
+'''
+用户删除文件函数：
+输入参数
+    用户名，文件名
+返回值
+    有删除权限且删除成功：1
+    无删除权限：-1
+''' 
+def file_del(usr, file_name):
     pass
