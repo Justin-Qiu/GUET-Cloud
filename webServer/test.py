@@ -1,52 +1,61 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from server import user_log
-from server import file_read
-from server import file_write
-from server import file_del
+from functions import user_log
+from functions import file_read
+from functions import file_write
+from functions import file_del
+
+from suds.client import Client 
+
+client = Client('http://localhost:7789/?wsdl', cache=None)
 
 print '--------------------------------------------------'
 usr = raw_input('用户名：')
 pwd = raw_input('密码：')
 
-try1 = user_log(usr, pwd)
+try1 = client.service.login(usr, pwd)
 
 print '--------------------------------------------------'
 
-if try1 == -1:
+if try1.string[0] == '2':
     print '密码错误！'
-elif try1 == -2:
-    print '用户名错误！'
-else:
+elif try1.string[0] == '3':
+    print '用户名不存在！'
+elif try1.string[0] == '1':
     print '登录成功！'
     print '--------------------------------------------------'
-    for item in try1[:-1]:
+    user_info = client.service.user(usr, pwd)
+    for item in user_info.string[:-1]:
         print item + ' ',
     print ''
     print '--------------------------------------------------'
-
-if try1 != -1 and try1 != -2:
-    for i in range(len(try1[-1])):
+    
+    files_info = client.service.files(usr, pwd)
+    for i in range(len(files_info.stringArray)):
         for j in range(4):
-            print try1[-1][i][j],
+            print files_info.stringArray[i].string[j],
         print ''
 
-print '--------------------------------------------------'
+    print '--------------------------------------------------'
 
-if try1 != -1 and try1 != -2:
     index = raw_input('请输入您要查看的文件序号：')
     print '--------------------------------------------------'
-    file_name = '文件' + index
-    try2 = file_read(usr, file_name)
-    if try2 == -2:
+    file_name = u'文件' + index
+    file_read = client.service.read(usr, file_name)
+    if file_read.string[0] == '2':
         print '您无权阅读该文件！'
+    elif file_read.string[0] == '1':
+        print file_read.string[1]
+    print '--------------------------------------------------'
+
+'''
     elif try2[1] == -1:
-        print try2[0],
+        print try2[0]
         print '--------------------------------------------------'
         print '您无权修改该文件！'
     elif try2[1] == 1:
-        print try2[0],
+        print try2[0]
         print '--------------------------------------------------'
         print '您可以修改该文件！'
         flag = raw_input('是否修改该文件？ [y/N] ')
@@ -59,4 +68,6 @@ if try1 != -1 and try1 != -2:
             print '修改成功'
         else:
             pass
+
     print '--------------------------------------------------' 
+'''
