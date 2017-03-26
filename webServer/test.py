@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from functions import user_log
-from functions import file_read
-from functions import file_write
-from functions import file_del
-
 from suds.client import Client 
 
 client = Client('http://192.168.40.129:7789/?wsdl', cache=None)
