@@ -12,7 +12,7 @@ from functions import file_write
 from functions import file_del     
 
 class WebService(DefinitionBase):  
-    @soap(String, String, _returns = Array(String))  
+    @soap(String, String, _returns = String)  
     def login(self, usr, pwd):
         info = user_log(usr, pwd)[0]
         return info
@@ -28,8 +28,18 @@ class WebService(DefinitionBase):
         return info
 
     @soap(String, String, _returns = Array(String))  
-    def read(self, usr, file_name):  
+    def read(self, usr, file_name):
         info = file_read(usr, file_name)
+        return info
+        
+    @soap(String, String, String, _returns = Integer)  
+    def edit(self, usr, file_name, txt):
+        info = file_write(usr, file_name, txt)
+        return info
+    
+    @soap(String, String, _returns = Integer)  
+    def delete(self, usr, file_name):
+        info = file_del(usr, file_name)
         return info
   
 if __name__=='__main__':  
@@ -37,7 +47,7 @@ if __name__=='__main__':
         from wsgiref.simple_server import make_server  
         soap_application = soaplib.core.Application([WebService], 'tns')  
         wsgi_application = wsgi.Application(soap_application)  
-        server = make_server('localhost', 7789, wsgi_application)  
+        server = make_server('192.168.40.129', 7789, wsgi_application)  
         print 'soap server starting......'  
         server.serve_forever()  
     except ImportError:  

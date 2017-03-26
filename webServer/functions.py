@@ -249,7 +249,7 @@ def file_write(usr, file_name, txt):
                     f.write('%s' % txt)
                 return 1
             else:
-                return -1    
+                return -1   
 
     # 关闭数据库连接
     conn.close()

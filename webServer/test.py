@@ -8,7 +8,7 @@ from functions import file_del
 
 from suds.client import Client 
 
-client = Client('http://localhost:7789/?wsdl', cache=None)
+client = Client('http://192.168.40.129:7789/?wsdl', cache=None)
 
 print '--------------------------------------------------'
 usr = raw_input('用户名：')
@@ -18,11 +18,11 @@ try1 = client.service.login(usr, pwd)
 
 print '--------------------------------------------------'
 
-if try1.string[0] == '2':
+if try1 == '2':
     print '密码错误！'
-elif try1.string[0] == '3':
+elif try1 == '3':
     print '用户名不存在！'
-elif try1.string[0] == '1':
+elif try1 == '1':
     print '登录成功！'
     print '--------------------------------------------------'
     user_info = client.service.user(usr, pwd)
@@ -39,35 +39,39 @@ elif try1.string[0] == '1':
 
     print '--------------------------------------------------'
 
-    index = raw_input('请输入您要查看的文件序号：')
+    oprt = raw_input('请选择您要进行的操作（删除[d]/阅读[R]）：')
     print '--------------------------------------------------'
-    file_name = u'文件' + index
-    file_read = client.service.read(usr, file_name)
-    if file_read.string[0] == '2':
-        print '您无权阅读该文件！'
-    elif file_read.string[0] == '1':
-        print file_read.string[1]
-    print '--------------------------------------------------'
-
-'''
-    elif try2[1] == -1:
-        print try2[0]
+    if oprt == 'd':
+        index = raw_input('请输入您要删除的文件序号：')
         print '--------------------------------------------------'
-        print '您无权修改该文件！'
-    elif try2[1] == 1:
-        print try2[0]
+        file_name = u'文件' + index
+        file_delete = client.service.delete(usr, file_name)
+        if file_delete == -1:
+            print '您无权删除该文件！'
+        elif file_delete == 1:
+            print '删除成功!'
+    else:
+        index = raw_input('请输入您要查看的文件序号：')
         print '--------------------------------------------------'
-        print '您可以修改该文件！'
-        flag = raw_input('是否修改该文件？ [y/N] ')
-        if flag == 'y':
+        file_name = u'文件' + index
+        file_read = client.service.read(usr, file_name)
+        if file_read.string[0] == '2':
+            print '您无权阅读该文件！'
+        elif file_read.string[0] == '1':
+            print file_read.string[1]
             print '--------------------------------------------------'
-            print '请输入修改后的内容：'
-            txt = raw_input()
-            file_write(usr, file_name, txt)
-            print '--------------------------------------------------'
-            print '修改成功'
-        else:
-            pass
+            flag = raw_input('是否修改该文件？ [y/N] ')
+            if flag == 'y':
+                print '--------------------------------------------------'
+                print '请输入修改后的内容：'
+                txt = raw_input()
+                file_edit = client.service.edit(usr, file_name, txt)
+                print '--------------------------------------------------'
+                if file_edit == -1:
+                    print '您无权修改该文件！'
+                elif file_edit == 1:
+                    print '修改成功!'
+            else:
+                pass
 
-    print '--------------------------------------------------' 
-'''
+print '--------------------------------------------------' 
