@@ -243,6 +243,7 @@ def file_write(usr, file_name, txt):
             colume = 5
         
         # 根据用户权限修改文件
+        txt = txt.encode('utf-8')
         for fil in result_file:
             if 'W' in fil[colume]:
                 with open('files/%s' % file_name, 'w') as f:

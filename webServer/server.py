@@ -9,7 +9,7 @@ from soaplib.core.model.clazz import Array
 from functions import user_log
 from functions import file_read
 from functions import file_write
-from functions import file_del     
+from functions import file_del  
 
 class WebService(DefinitionBase):  
     @soap(String, String, _returns = String)  

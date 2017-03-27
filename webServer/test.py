@@ -60,6 +60,7 @@ elif try1 == '1':
                 print '--------------------------------------------------'
                 print '请输入修改后的内容：'
                 txt = raw_input()
+                txt = txt.decode('utf-8')
                 file_edit = client.service.edit(usr, file_name, txt)
                 print '--------------------------------------------------'
                 if file_edit == -1:
