@@ -40,7 +40,7 @@ def user_log(usr, pwd):
     results = cur.fetchall()
     for row in results:
         pass_word = row[2]
-        if pwd == pass_word:
+        if pwd == pass_word and pass_word != '':
             name = row[3]
             sex = row[4]
             unitid = row[5]
