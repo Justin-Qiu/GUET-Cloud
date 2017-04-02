@@ -125,6 +125,8 @@ def user_log(usr, pwd):
                         auth = u''
                         for cha in row[colume]:
                             auth = auth + trans[cha]
+                        if row[colume] == '':
+                            auth = u'无'
                         files.append([row[1], file_size, file_time, auth])
             
             # 返回信息
