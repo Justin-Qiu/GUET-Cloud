@@ -9,8 +9,12 @@ from soaplib.core.model.clazz import Array
 from functions import user_reg
 from functions import user_log
 from functions import file_read
+from functions import file_upload
+'''
 from functions import file_write
+from functions import file_write_auth
 from functions import file_del
+from functions import file_search
 
 from auth.rsa.rsa import rsa_reg
 from auth.rsa.rsa import rsa_auth
@@ -18,11 +22,11 @@ from auth.elgamal.elgamal import elgamal_reg
 from auth.elgamal.elgamal import elgamal_auth
 from auth.dsa.dsa import dsa_reg
 from auth.dsa.dsa import dsa_auth
-
+'''
 class WebService(DefinitionBase): 
-    @soap(String, String, String, String, String, String, _returns = Integer)  
-    def reg(self, usr, pwd, name, sex_zh, unit, title):
-        info = user_reg(usr, pwd, name, sex_zh, unit, title)
+    @soap(String, String, String, String, Integer, _returns = Array(String))  
+    def reg(self, usr, pwd, name, sex_zh, group):
+        info = user_reg(usr, pwd, name, sex_zh, group)
         return info
  
     @soap(String, String, _returns = String)  
@@ -32,22 +36,32 @@ class WebService(DefinitionBase):
         
     @soap(String, String, _returns = Array(String))  
     def user(self, usr, pwd):
-        info = user_log(usr, pwd)[1:6]
+        info = user_log(usr, pwd)[1:4]
         return info
         
     @soap(String, String, _returns = Array(Array(String)))  
     def files(self, usr, pwd):
-        info = user_log(usr, pwd)[6]
+        info = user_log(usr, pwd)[4]
         return info
 
-    @soap(String, String, _returns = Array(String))  
-    def read(self, usr, file_name):
-        info = file_read(usr, file_name)
+    @soap(String, _returns = Array(String))  
+    def read(self, file_name):
+        info = file_read(file_name)
         return info
-        
+    
+    @soap(String, Integer, String, String, _returns = Integer)  
+    def upload(self, usr, group, file_name, txt):
+        info = file_upload(usr, group, file_name, txt)
+        return info
+    '''
     @soap(String, String, String, _returns = Integer)  
     def edit(self, usr, file_name, txt):
         info = file_write(usr, file_name, txt)
+        return info
+            
+    @soap(String, String, _returns = Integer)  
+    def edit_auth(self, usr, file_name):
+        info = file_write_auth(usr, file_name)
         return info
     
     @soap(String, String, _returns = Integer)  
@@ -84,13 +98,18 @@ class WebService(DefinitionBase):
     def auth_dsa(self, usr, sig1, sig2):
         info = dsa_auth(usr, sig1, sig2)
         return info
-          
+        
+    @soap(String, String, _returns = Array(Array(String)))  
+    def search(self, usr, kw):
+        info = file_search(usr, kw)
+        return info
+    '''      
 if __name__=='__main__':  
     try:  
         from wsgiref.simple_server import make_server  
         soap_application = soaplib.core.Application([WebService], 'tns')  
         wsgi_application = wsgi.Application(soap_application)  
-        server = make_server('10.170.52.239', 7789, wsgi_application)  
+        server = make_server('10.170.37.228', 7789, wsgi_application)  
         print 'soap server starting......'  
         server.serve_forever()  
     except ImportError:  
